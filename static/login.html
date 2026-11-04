@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login</title>
+
+  <link rel="icon" href="/static/favicon.png">
+  <link rel="stylesheet" href="/static/style.css">
+
+  <script type="module" src="/static/login.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" class="brand">MeuGremio</a>
+
+    <h1 class="title">ENTRADA</h1>
+
+    <div class="right">
+      <button class="toggle" id="sideMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <img class="icon-menu" src="/static/icones/v branco/27.png" alt="Abrir menu">
+        <img class="icon-close" src="/static/icones/v branco/28.png" alt="Fechar menu">
+      </button>
+    </div>
+
+    <nav class="side-menu" id="sideMenu">
+      <a href="/">
+        <img src="/static/icones/v branco/31.png" alt=""><span>Feed</span>
+      </a>
+      <a href="/usuario/perfil">
+        <img src="/static/icones/v branco/32.png" alt=""><span>Perfil</span>
+      </a>
+      <a href="#" class="accessibility-link">
+        <img src="/static/icones/v branco/29.png" alt=""><span>Acessibilidade</span>
+      </a>
+      <a href="criacaodechapa">
+        <img src="/static/icones/v branco/30.png" alt=""><span>Criação de Chapa</span>
+      </a>
+      <a href="votacao">
+        <img src="/static/icones/v branco/34.png" alt=""><span>Votação</span>
+      </a>
+      <div class="spacer"></div>
+      <a href="login" class="sair">
+        <img src="/static/icones/v branco/33.png" alt=""><span>Sair</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="center-card">
+      <h2>Entre na plataforma</h2>
+
+      <form class="credential-form" id="credentialForm">
+        <div class="row">
+          <div class="field">
+            <label for="email">Email Institucional:</label>
+            <input type="email" id="userEmail" name="email" class="text-input" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="password">Senha:</label>
+
+            <div class="password-wrap">
+              <input type="password" id="userPassword" name="password" class="text-input" required>
+
+              <button type="button" class="eye-btn" id="passwordView" aria-label="Mostrar senha">
+                <img class="eye-open" src="/static/icones/v grena/5.png">
+                <img class="eye-closed" src="/static/icones/v grena/6.png">
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="confirmPassword">Confirmar Senha:</label>
+
+            <div class="password-wrap">
+              <input type="password" id="userConfirmPassword" name="confirmPassword" class="text-input" required>
+
+              <button type="button" class="eye-btn" id="confirmPasswordView" aria-label="Mostrar senha">
+                <img class="eye-open" src="/static/icones/v grena/5.png">
+                <img class="eye-closed" src="/static/icones/v grena/6.png">
+              </button>
+            </div>
+
+            <span class="tag tag-center incorrect-tag" id="confirmPasswordStatus">
+              * SENHAS NÃO BATEM!
+            </span>
+          </div>
+        </div>
+
+        <a href="/usuario/esqueci" class="tag-center">Esqueci a senha</a>
+
+        <button type="submit" class="btn-primary">
+          Continuar
+        </button>
+
+      </form>
+    </section>
+
+  </main>
+</body>
+
+</html>

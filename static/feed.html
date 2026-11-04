@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed</title>
+
+  <link rel="icon" href="/static/favicon.png">
+  <link rel="stylesheet" href="/static/style.css">
+
+  <script type="module" src="/static/feed.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" class="brand">MeuGremio</a>
+
+    <div class="search-wrap">
+      <input type="text" class="search-input" placeholder="Pesquisar" id="buscaChapa">
+      <span class="search-icon">
+        <img src="/static/icones/v grena/26.png" alt="Pesquisar">
+      </span>
+    </div>
+
+    <div class="right">
+      <button class="toggle" id="sideMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <img class="icon-menu" src="/static/icones/v branco/27.png" alt="Abrir menu">
+        <img class="icon-close" src="/static/icones/v branco/28.png" alt="Fechar menu">
+      </button>
+    </div>
+
+    <nav class="side-menu" id="sideMenu">
+      <a href="/">
+        <img src="/static/icones/v branco/31.png" alt=""><span>Feed</span>
+      </a>
+      <a href="usuario/perfil">
+        <img src="/static/icones/v branco/32.png" alt=""><span>Perfil</span>
+      </a>
+      <a href="#" class="accessibility-link">
+        <img src="/static/icones/v branco/29.png" alt=""><span>Acessibilidade</span>
+      </a>
+      <a href="criacaodechapa">
+        <img src="/static/icones/v branco/30.png" alt=""><span>Criação de Chapa</span>
+      </a>
+      <a href="votacao">
+        <img src="/static/icones/v branco/34.png" alt=""><span>Votação</span>
+      </a>
+      <div class="spacer"></div>
+      <a href="login" class="sair">
+        <img src="/static/icones/v branco/33.png" alt=""><span>Sair</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- <div class="accessibility-overlay" id="accessOverlay">
+    <div class="accessibility-modal">
+      <div class="modal-title">
+        <h3>Modos</h3>
+
+        <button class="modal-close" type="button" aria-label="Fechar acessibilidade">
+          <img src="/static/icones/v branco/19.png" alt="Fechar">
+        </button>
+      </div>
+
+
+      <div class="mode-row">
+        <span>Claro</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <img class="switch-image" src="/static/icones/v branco/2.png" alt="">
+        </label>
+      </div>
+
+      <div class="mode-row">
+        <span>Escuro</span>
+        <label class="switch">
+          <input type="checkbox">
+          <img class="switch-image" src="/static/icones/v branco/1.png" alt="">
+        </label>
+      </div>
+
+      <div class="mode-row">
+        <span>Daltônico</span>
+        <label class="switch">
+          <input type="checkbox">
+          <img class="switch-image" src="/static/icones/v branco/1.png" alt="">
+        </label>
+      </div>
+
+      <div class="font-row">
+        <span>Aumentar fonte</span>
+        <button class="font-btn" id="increaseFont" type="button" aria-label="Aumentar fonte">
+          <img src="/static/icones/v branco/4.png" alt="Aumentar fonte">
+        </button>
+      </div>
+
+      <div class="font-row">
+        <span>Diminuir fonte</span>
+        <button class="font-btn" id="decreaseFont" type="button" aria-label="Diminuir fonte">
+          <img src="/static/icones/v branco/3.png" alt="Diminuir fonte">
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <main class="feed-container" id="feedContainer">
+
+    <article class="post-card" data-post-id="1">
+
+      <div class="post-header">
+        <div class="avatar">
+          <img src="/static/icones/v grena/32.png" alt="Avatar">
+        </div>
+        <span class="post-username">alcatec</span>
+        <span class="post-hashtag">#divulgacao</span>
+      </div>
+
+      <p class="post-text">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...</p>
+
+      <div class="post-media">
+        <div class="post-divider"></div>
+        <div class="carrossel-window">
+          <div class="carrossel-rail">
+            <div class="carrossel-slide"><img src="" alt=""></div>
+            <div class="carrossel-slide"><img src="" alt=""></div>
+            <div class="carrossel-slide"><img src="" alt=""></div>
+          </div>
+          <button type="button" class="carrossel-btn carrossel-prev" aria-label="Imagem anterior"><img
+              src="/static/icones/v grena/21.png" alt=""></button>
+          <button type="button" class="carrossel-btn carrossel-next" aria-label="Próxima imagem"><img
+              src="/static/icones/v grena/20.png" alt=""></button>
+          <div class="carrossel-dots"></div>
+        </div>
+      </div>
+
+      <div class="post-actions">
+        <button class="icon-btn" aria-label="Curtir">
+          <img src="/static/icones/v grena/7.png" alt="">
+        </button>
+        <button class="icon-btn" aria-label="Comentar">
+          <img src="/static/icones/v grena/9.png" alt="">
+        </button>
+        <button class="icon-btn" aria-label="Compartilhar">
+          <img src="/static/icones/v grena/10.png" alt="">
+        </button>
+
+        <div class="actions-wrap">
+          <button type="button" class="icon-btn" aria-label="Opções do post" aria-expanded="false">
+            <img src="/static/icones/v grena/12.png" alt="">
+          </button>
+          <div class="config-menu hidden">
+            <a class="menu-item" href="editar-post.html?id=TODO">Editar post</a>
+            <button type="button" class="menu-item menu-item-excluir">Excluir post</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="post-card" data-post-id="2">
+
+      <div class="post-header">
+        <div class="avatar">
+          <img src="/static/icones/v grena/32.png" alt="Avatar">
+        </div>
+        <span class="post-username">diretor_cultura</span>
+        <span class="post-hashtag">#noticia</span>
+      </div>
+
+      <p class="post-text">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...</p>
+
+      <div class="post-actions">
+        <button class="icon-btn liked" aria-label="Descurtir">
+          <img src="/static/icones/v grena/8.png" alt="">
+        </button>
+        <button class="icon-btn" aria-label="Comentar">
+          <img src="/static/icones/v grena/9.png" alt="">
+        </button>
+        <button class="icon-btn" aria-label="Compartilhar">
+          <img src="/static/icones/v grena/10.png" alt="">
+        </button>
+
+        <div class="actions-wrap">
+          <button type="button" class="icon-btn" aria-label="Opções do post" aria-expanded="false">
+            <img src="/static/icones/v grena/12.png" alt="">
+          </button>
+          <div class="config-menu hidden">
+            <a class="menu-item" href="editar-post.html?id=2">Editar post</a>
+            <button type="button" class="menu-item menu-item-excluir">Excluir post</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <button class="new-post-btn" id="newPostFab" aria-label="Criar publicação">
+    <img src="/static/icones/v branco/11.png" alt="">
+  </button>
+
+  <!-- <div class="modal-overlay open" id="newPostOverlay">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <span>NOVO POST</span>
+        <button type="button" class="modal-close" id="newPostClose" aria-label="Fechar">
+          <img src="/static/icones/v branco/19.png" alt="">
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="post-header">
+          <div class="avatar">
+            <img src="/static/icones/v grena//32.png" alt="Avatar">
+          </div>
+          <span class="post-username">diretor_cultura</span>
+          <select class="category-select" aria-label="Categoria da publicação">
+            <option>#categoria</option>
+            <option>#divulgacao</option>
+            <option>#noticia</option>
+            <option>#evento</option>
+          </select>
+        </div>
+
+        <div class="composer-row">
+          <input type="text" class="text-input" id="newPostText" placeholder="inserir texto...">
+          <button type="button" class="attach-btn" id="newPostAttachBtn" aria-label="Anexar">
+            <img src="/static/icones/v branco/18.png" alt="">
+          </button>
+        </div>
+
+        <div class="attach-toolbar" id="attachToolbar">
+          <button type="button" class="toolbar-icon-btn" id="galleryBtn" aria-label="Anexar imagens">
+            <img src="/static/icones/v branco/14.png" alt="">
+          </button>
+          <button type="button" class="toolbar-icon-btn" id="uploadBtn" aria-label="Enviar arquivo">
+            <img src="/static/icones/v branco/15.png" alt="">
+          </button>
+          <button type="button" class="toolbar-icon-btn" id="pollBtn" aria-label="Criar enquete">
+            <img src="/static/icones/v branco/16.png" alt="">
+          </button>
+        </div>
+
+        <input type="file" id="newPostImageFile" accept="image/*" multiple hidden>
+        <input type="file" id="newPostGenericFile" hidden>
+
+        <div class="image-preview" id="newPostImagePreview" hidden></div>
+
+        <div class="file-row" id="newPostFilePreview" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="8" y1="13" x2="16" y2="13"></line>
+            <line x1="8" y1="17" x2="13" y2="17"></line>
+          </svg>
+          <span class="file-row-name" id="newPostFileNameLabel"></span>
+          <button type="button" class="remove-attachment-btn" id="removeFileBtn"
+            aria-label="Remover arquivo">&times;</button>
+        </div>
+
+        <div class="poll-block" id="newPostPollBlock" hidden>
+          <button type="button" class="remove-attachment-btn" id="removePollBtn"
+            aria-label="Remover enquete">&times;</button>
+          <input type="text" class="poll-question" id="pollQuestion" placeholder="inserir pergunta...">
+          <div class="poll-options" id="pollOptions">
+            <div class="poll-option-row"><input type="text" class="text-input poll-option-input" placeholder="opção 01">
+            </div>
+            <div class="poll-option-row"><input type="text" class="text-input poll-option-input" placeholder="opção 02">
+            </div>
+            <div class="poll-option-row last-option">
+              <input type="text" class="text-input poll-option-input" placeholder="opção 03">
+              <button type="button" class="add-option-btn" id="addOptionBtn" aria-label="Adicionar opção">
+                <img src="/static/icones/v branco/4.png" alt="">
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="newPostSubmit">Postar</button>
+      </div>
+    </div>
+  </div> -->
+</body>
+
+</html>

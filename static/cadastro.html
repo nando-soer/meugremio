@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cadastro</title>
+
+  <link rel="icon" href="/static/favicon.png">
+  <link rel="stylesheet" href="/static/style.css">
+
+  <script type="module" src="/static/cadastro.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" class="brand">MeuGremio</a>
+
+    <h1 class="title">CADASTRO</h1>
+
+    <div class="right">
+      <button class="toggle" id="sideMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <img class="icon-menu" src="/static/icones/v branco/27.png" alt="Abrir menu">
+        <img class="icon-close" src="/static/icones/v branco/28.png" alt="Fechar menu">
+      </button>
+    </div>
+
+    <nav class="side-menu" id="sideMenu">
+      <a href="/">
+        <img src="/static/icones/v branco/31.png" alt=""><span>Feed</span>
+      </a>
+      <a href="/usuario/perfil">
+        <img src="/static/icones/v branco/32.png" alt=""><span>Perfil</span>
+      </a>
+      <a href="#" class="accessibility-link">
+        <img src="/static/icones/v branco/29.png" alt=""><span>Acessibilidade</span>
+      </a>
+      <a href="criacaodechapa">
+        <img src="/static/icones/v branco/30.png" alt=""><span>Criação de Chapa</span>
+      </a>
+      <a href="votacao">
+        <img src="/static/icones/v branco/34.png" alt=""><span>Votação</span>
+      </a>
+      <div class="spacer"></div>
+      <a href="login" class="sair">
+        <img src="/static/icones/v branco/33.png" alt=""><span>Sair</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- 
+  <div class="accessibility-overlay" id="accessOverlay">
+    <div class="accessibility-modal">
+      <div class="modal-title">
+        <h3>Modos</h3>
+
+        <button class="modal-close" type="button" aria-label="Fechar acessibilidade">
+          <img src="/static/icones/v branco/19.png" alt="Fechar">
+        </button>
+      </div>
+
+
+      <div class="mode-row">
+        <span>Claro</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <img class="switch-image" src="/static/icones/v branco/2.png" alt="">
+        </label>
+      </div>
+
+      <div class="mode-row">
+        <span>Escuro</span>
+        <label class="switch">
+          <input type="checkbox">
+          <img class="switch-image" src="/static/icones/v branco/1.png" alt="">
+        </label>
+      </div>
+
+      <div class="mode-row">
+        <span>Daltônico</span>
+        <label class="switch">
+          <input type="checkbox">
+          <img class="switch-image" src="/static/icones/v branco/1.png" alt="">
+        </label>
+      </div>
+
+      <div class="font-row">
+        <span>Aumentar fonte</span>
+        <button class="font-btn" id="increaseFont" type="button" aria-label="Aumentar fonte">
+          <img src="/static/icones/v branco/4.png" alt="Aumentar fonte">
+        </button>
+      </div>
+
+      <div class="font-row">
+        <span>Diminuir fonte</span>
+        <button class="font-btn" id="decreaseFont" type="button" aria-label="Diminuir fonte">
+          <img src="/static/icones/v branco/3.png" alt="Diminuir fonte">
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <main class="container">
+    <section class="center-card">
+      <h2>Crie sua Conta</h2>
+
+      <form class="credential-form" id="credentialForm">
+        <div class="row">
+
+          <div class="field">
+            <label for="name">Nome:</label>
+            <input type="text" id="userName" name="name" class="text-input" required>
+          </div>
+
+          <div class="field">
+            <label for="class">Turma:</label>
+
+            <div class="select-wrap">
+              <select id="userClass" name="turma" class="select-display" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option value="3_info">3° INFO</option>
+                <option value="2_info">2° INFO</option>
+                <option value="1_info">1° INFO</option>
+                <option value="3_adm">3° ADM</option>
+                <option value="2_adm">2° ADM</option>
+                <option value="1_adm">1° ADM</option>
+                <option value="1_mkt">1° MKT</option>
+              </select>
+
+              <span class="select-arrow">
+                <img src="/static/icones/v branco/22.png">
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="email">Email Institucional:</label>
+            <input type="email" id="userEmail" name="email" class="text-input" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="password">Senha:</label>
+
+            <div class="password-wrap">
+              <input type="password" id="userPassword" name="password" class="text-input" required>
+
+              <button type="button" class="eye-btn" id="passwordView" aria-label="Mostrar senha">
+                <img class="eye-open" src="/static/icones/v grena/5.png">
+                <img class="eye-closed" src="/static/icones/v grena/6.png">
+              </button>
+            </div>
+
+            <div class="strength-bar" id="strengthBar">
+              <div class="active-weak"></div>
+              <div></div>
+              <div></div>
+            </div>
+
+            <div>
+              <span class="tag tag-right weak-password" id="passwordStrengthCheck">
+                SENHA FRACA
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="confirmPassword">Confirmar Senha:</label>
+
+            <div class="password-wrap">
+              <input type="password" id="userConfirmPassword" name="confirmPassword" class="text-input" required>
+
+              <button type="button" class="eye-btn" id="confirmPasswordView" aria-label="Mostrar senha">
+                <img class="eye-open" src="/static/icones/v grena/5.png">
+                <img class="eye-closed" src="/static/icones/v grena/6.png">
+              </button>
+            </div>
+
+            <span class="tag tag-center incorrect-tag" id="confirmPasswordStatus">
+              * SENHAS NÃO BATEM!
+            </span>
+          </div>
+        </div>
+
+        <a href="/usuario/entrar" class="tag-center">Já tenho uma conta</a>
+
+        <button type="submit" class="btn-primary">
+          Continuar
+        </button>
+
+      </form>
+    </section>
+
+  </main>
+</body>
+
+</html>
