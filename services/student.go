@@ -18,7 +18,7 @@ func CreateStudentService(model models.StudentModel) StudentService {
 	return StudentService{model: model}
 }
 
-func (student *StudentService) IsEmailAlreadyUsed(ctx context.Context, email string) (bool, error) {
+func (student *StudentService) EmailExists(ctx context.Context, email string) (bool, error) {
 	return student.model.EmailExists(ctx, email)
 }
 

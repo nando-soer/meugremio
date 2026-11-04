@@ -5,6 +5,8 @@ import { ChangePasswordStatus, ClickViewPassword } from "./modules/forms.js";
 const sideMenuButton = document.querySelector('#sideMenuToggle');
 const sideMenu = document.querySelector('#sideMenu');
 
+const loginForm = document.querySelector('#credentialForm');
+
 const userPassword = document.querySelector('#userPassword');
 const passwordView = document.querySelector('#passwordView');
 const confirmPasswordView = document.querySelector('#confirmPasswordView');
@@ -12,6 +14,28 @@ const userConfirmPassword = document.querySelector('#userConfirmPassword');
 
 let modal = new Modal();
 modal.Create();
+
+loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const data = {
+        email: document.querySelector('#userEmail').value,
+        password: userPassword.value
+    };
+
+    let response = await fetch('/api/usuario/entrar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+
+    let responseData = await response.json()
+
+    modal.UpdateContent(responseData.html)
+    modal.Show()
+});
 
 sideMenuButton.addEventListener('click', (_) => SideMenuToggle(sideMenuButton, sideMenu));
 

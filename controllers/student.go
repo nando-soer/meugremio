@@ -157,7 +157,7 @@ func (student *StudentController) InitPendingRegister(ctx *gin.Context) {
 
 		data.Email = strings.ToLower(data.Email)
 
-		exists, err := student.service.IsEmailAlreadyUsed(ctx, data.Email)
+		exists, err := student.service.EmailExists(ctx, data.Email)
 		if exists || err != nil {
 			ctx.JSON(http.StatusForbidden, craftResponse(
 				"EMAIL JÁ UTILIZADO",
@@ -277,8 +277,11 @@ func (student *StudentController) ConfirmPendingRegister(ctx *gin.Context) {
 
 func (student *StudentController) Login(ctx *gin.Context) {
 	if student.AlreadyLogged(ctx) {
-		// TODO: better error handling
-		ctx.String(http.StatusForbidden, "User already logged")
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"USUÁRIO LOGADO",
+			"O usuário já está devidamente registrado e com acesso à plataforma.",
+			"",
+		))
 		return
 	}
 
@@ -286,31 +289,76 @@ func (student *StudentController) Login(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&submission)
 	if err != nil {
-		// TODO: better error handling
-		ctx.String(http.StatusBadRequest, err.Error())
+		ctx.JSON(http.StatusBadRequest, craftResponse(
+			"REQUISIÇÃO MAL FORMADA",
+			"Seus dados foram mal recebidos pelo nosso servidor.",
+			"",
+		))
+		return
+	}
+
+	emailExists, err := student.service.EmailExists(ctx, submission.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Não conseguimos processar seu pedido de entrada.",
+			"",
+		))
+		return
+	}
+
+	if !emailExists {
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"NÃO ENCONTRADO",
+			"O email inserido não foi encontrado no nosso sistema. Clique no botão abaixo para ser encaminhado à página de cadastro.",
+			`
+				<button class="btn-primary" type="button" onclick="window.location.href='/usuario/cadastro'">
+            	    Cadastro
+            	</button>
+			`,
+		))
 		return
 	}
 
 	isLoginValid, err := student.service.Validate(ctx, submission)
 	if err != nil {
-		// TODO: better error handling
-		ctx.String(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Não conseguimos processar seu pedido de entrada.",
+			"",
+		))
+		return
 	}
 
 	if !isLoginValid {
-		// TODO: better error handling
-		ctx.String(http.StatusUnauthorized, "Email or password is incorrect")
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"INCORRETO",
+			"Seu email ou sua senha estão incorretos.",
+			"",
+		))
 		return
 	}
 
 	sessionId, err := student.service.InstantiateSession(ctx, submission.Email)
 	if err != nil {
-		// TODO: better error handling
-		ctx.String(http.StatusInternalServerError, err.Error())
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Não conseguimos fornecer acesso à sua conta. Tente novamente mais tarde..",
+			"",
+		))
+		return
 	}
 
 	ctx.SetCookie("id", sessionId, 60*60*24, "/", "", true, false) // change to true
-	ctx.String(http.StatusOK, sessionId)
+	ctx.JSON(http.StatusOK, craftResponse(
+		"SUCESSO",
+		"Seja bem vindo(a) à plataforma MeuGremio! Clique no botão abaixo para ir até seu novíssimo perfil e personalizá-lo!",
+		`
+			<button class="btn-primary" type="button" onclick="window.location.href='/usuario/perfil'">
+                Perfil
+            </button>
+		`,
+	))
 }
 
 // ------------------------------------------- Test ---------------------------------------------
