@@ -795,6 +795,32 @@ h2 {
   transform: scale(0.97);
 }
 
+.back-btn {
+  position: absolute;
+  top: 50%;
+  left: 30px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  color: var(--wine);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%);
+}
+
+.back-btn img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain
+}
+
 /* =========================================================
    MODAIS
 ============================================================ */
@@ -1004,4 +1030,214 @@ h2 {
   font-style: italic;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* PERFIL */
+
+.profile-page {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+
+  padding: 88px 16px 40px;
+}
+
+.profile-card {
+  padding: 0;
+}
+
+.profile-banner {
+  position: relative;
+  height: clamp(150px, 24vw, 220px);
+  overflow: hidden;
+}
+
+.profile-banner img {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.profile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 0 14px;
+}
+
+.profile-top {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.profile-avatar {
+  position: relative;
+  margin-top: -35px;
+
+  width: 124px;
+  height: 124px;
+
+  background: var(--wine);
+  border: 6px solid #ffffff;
+  border-radius: 50%;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.profile-info {
+  flex-grow: 1;
+}
+
+.profile-name {
+  width: fit-content;
+  text-align: left !important;
+  margin-bottom: 15px !important;
+  border-bottom: 3px solid var(--wine);
+}
+
+.btn-profile {
+  margin-top: 15px;
+  width: fit-content;
+  height: fit-content;
+
+  font-size: 13px;
+  padding: 8px 15px;
+}
+
+.profile-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-bottom .desc-title {
+  color: var(--wine);
+  font-family: 'League Gothic', Impact, sans-serif;
+  font-size: 24px;
+}
+
+.profile-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 720px;
+  padding: 0 4px 10px;
+  font-family: 'League Gothic', Impact, sans-serif;
+  font-size: 25px;
+  border-bottom: 1px solid #ead8d8;
+}
+
+.profile-section-divider::before {
+  content: "";
+  width: 5px;
+  height: 26px;
+  flex: 0 0 5px;
+  border-radius: 5px;
+  background: var(--wine);
+}
+
+/* Responsividade de perfil */
+@media (max-width: 750px) {
+  .profile-section-divider {
+    width: 100%;
+  }
+}
+
+@media (max-width: 495px) {
+  .profile-top {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profile-name {
+    width: 100%;
+    margin-bottom: 0;
+    text-align: center !important;
+  }
+
+  .btn-profile {
+    margin-top: 0;
+  }
+}
+
+/* EDIÇÃO DE PERFIL */
+
+.banner {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(180deg,
+      #bfe4f0 0%,
+      #eaf7fb 100%);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.btn-banner {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 5;
+  padding: 10px 22px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.avatar-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: -60px;
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 116px;
+  height: 116px;
+  border: 5px solid #ffffff;
+  border-radius: 50%;
+  background: #fff url("/static/ilustracoes/outros/1.png") center/contain no-repeat;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-layers {
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-layers img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none
+}
+
+.avatar-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 34px;
+}
+
+.btn-avatar {
+  padding: 12px 30px;
 }

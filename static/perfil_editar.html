@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Perfil</title>
+
+  <link rel="icon" href="/static/favicon.png">
+  <link rel="stylesheet" href="/static/style.css">
+
+  <script type="module" src="/static/perfil.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <button class="back-btn" onclick="history.back()" aria-label="Voltar">
+      <img src="/static/icones/v grena/21.png" alt="Voltar">
+    </button>
+
+    <h1 class="title">EDIÇÃO DE PERFIL</h1>
+
+    <div class="right">
+      <button class="toggle" id="sideMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <img class="icon-menu" src="/static/icones/v branco/27.png" alt="Abrir menu">
+        <img class="icon-close" src="/static/icones/v branco/28.png" alt="Fechar menu">
+      </button>
+    </div>
+
+    <nav class="side-menu" id="sideMenu">
+      <a href="/">
+        <img src="/static/icones/v branco/31.png" alt=""><span>Feed</span>
+      </a>
+      <a href="/usuario/perfil">
+        <img src="/static/icones/v branco/32.png" alt=""><span>Perfil</span>
+      </a>
+      <a href="#" class="accessibility-link">
+        <img src="/static/icones/v branco/29.png" alt=""><span>Acessibilidade</span>
+      </a>
+      <a href="criacaodechapa">
+        <img src="/static/icones/v branco/30.png" alt=""><span>Criação de Chapa</span>
+      </a>
+      <a href="votacao">
+        <img src="/static/icones/v branco/34.png" alt=""><span>Votação</span>
+      </a>
+      <div class="spacer"></div>
+      <a href="login" class="sair">
+        <img src="/static/icones/v branco/33.png" alt=""><span>Sair</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="center-card">
+      <div class="banner" id="mainBanner">
+        <button class="btn-banner btn-primary" type="button" onclick="abrirBanners()">Alterar<br>Banner</button>
+      </div>
+
+      <!-- <div class="popup-banners" id="popupBanners">
+        <div class="popup-conteudo">
+          <button class="fechar-popup" type="button" onclick="fecharBanners()" aria-label="Fechar"><img
+              src="icones/v grena/19.png" alt="Fechar"></button>
+          <div class="banners-opcoes">
+            <div class="banner-opcao"><img src="ilustracoes/banners/1.png" alt="Banner 1"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/2.png" alt="Banner 2"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/3.png" alt="Banner 3"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/4.png" alt="Banner 4"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/5.png" alt="Banner 5"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/6.png" alt="Banner 6"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/7.png" alt="Banner 7"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/8.png" alt="Banner 8"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/9.png" alt="Banner 9"></div>
+            <div class="banner-opcao"><img src="ilustracoes/banners/10.png" alt="Banner 10"></div>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="avatar-wrap">
+        <div class="avatar avatar-layers" id="mainAvatar"></div>
+      </div>
+
+      <div class="avatar-btn-wrap">
+        <button class="btn-avatar btn-primary" type="button" onclick="abrirAvatar()">Alterar
+          Avatar</button>
+      </div>
+
+      <form class="credential-form">
+        <div class="row">
+          <div class="field">
+            <label for="name">Nome:</label>
+            <input type="text" id="nome" class="text-input" placeholder="{{STUDENT_NAME}}">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="class">Turma:</label>
+            <div class="select-wrap">
+              <select id="userClass" name="turma" class="select-display" required>
+                <option value="3_info" disabled selected>3° INFO</option>
+                <option value="2_info">2° INFO</option>
+                <option value="1_info">1° INFO</option>
+                <option value="3_adm">3° ADM</option>
+                <option value="2_adm">2° ADM</option>
+                <option value="1_adm">1° ADM</option>
+                <option value="1_mkt">1° MKT</option>
+              </select>
+
+              <span class="select-arrow">
+                <img src="/static/icones/v branco/22.png">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="bio">Bio/Descrição:</label>
+            <textarea id="bio" class="text-input">
+          </textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Salvar</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- <div class="avatar-modal-overlay" id="avatarModal">
+    <div class="avatar-modal">
+      <button class="modal-close" type="button" onclick="fecharAvatar()" aria-label="Fechar"><img
+          src="icones/v branco/19.png" alt="Fechar"></button>
+      <div class="modal-left">
+        <div class="modal-avatar avatar-layers" id="preview"></div>
+      </div>
+      <div class="modal-right">
+        <div class="options-scroll" id="optionsScroll"></div><button class="btn-save-avatar" type="button"
+          onclick="salvarAvatar()">Salvar</button>
+      </div>
+    </div>
+  </div> -->
+</body>
+
+</html>

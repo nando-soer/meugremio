@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strings"
 	"tcc/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -11,13 +12,13 @@ func AuthMiddleware(student controllers.StudentController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		path := ctx.FullPath()
 
-		if !student.AlreadyLogged(ctx) && path == "/usuario/perfil" {
+		if !student.AlreadyLogged(ctx) && strings.Contains(path, "/usuario/perfil") {
 			ctx.Redirect(http.StatusFound, "./cadastro")
 			ctx.Abort()
 			return
 		}
 
-		if student.AlreadyLogged(ctx) && path != "/usuario/perfil" {
+		if student.AlreadyLogged(ctx) && !strings.Contains(path, "/usuario/perfil") {
 			ctx.Redirect(http.StatusFound, "./perfil")
 			ctx.Abort()
 			return
@@ -36,6 +37,7 @@ func Init(router *gin.Engine, controller controllers.StudentController) {
 	user_range.Use(AuthMiddleware(controller))
 	{
 		user_range.StaticFile("/perfil", "./static/perfil.html")
+		user_range.StaticFile("/perfil/editar", "./static/perfil_editar.html")
 		user_range.StaticFile("/cadastro", "./static/cadastro.html")
 		user_range.StaticFile("/entrar", "./static/login.html")
 		user_range.StaticFile("/esqueci", "./static/esqueci_senha.html")

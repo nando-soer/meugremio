@@ -349,7 +349,7 @@ func (student *StudentController) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("id", sessionId, 60*60*24, "/", "", true, false) // change to true
+	ctx.SetCookie("id", sessionId, 60*60*24*30, "/", "", true, false) // change to true
 	ctx.JSON(http.StatusOK, craftResponse(
 		"SUCESSO",
 		"Seja bem vindo(a) à plataforma MeuGremio! Clique no botão abaixo para ir até seu novíssimo perfil e personalizá-lo!",
