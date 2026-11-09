@@ -52,29 +52,30 @@
   <main class="profile-page">
     <section class="profile-card center-card">
 
-      <div class="profile-banner">
-        <!-- <img alt="Banner do perfil"> -->
+      <div class="banner">
+        <img src="/static/ilustracoes/banners/1.png" alt="Banner do perfil" id="profileBanner">
       </div>
 
       <div class="profile-body">
         <div class="profile-top">
-          <div class="profile-avatar">
-            <!-- <img alt="Logo do perfil"> -->
+          <div class="profile-avatar avatar-wrap">
+            <div class="avatar avatar-layers" id="profileAvatar">
+            </div>
           </div>
 
           <div class="profile-info">
-            <h2 class="profile-name">Fernando</h2>
-            <p class="profile-class">3° ano de Informática</p>
+            <h2 class="profile-name" id="profileName">{{USER_NAME}}</h2>
+            <p class="profile-class" id="profileClass">{{USER_CLASS}}</p>
           </div>
 
-          <button class="btn-profile btn-primary" type="button">
+          <button class="btn-profile btn-primary" type="button"  onclick="window.location.href='/usuario/perfil/editar'">
             Editar Perfil
           </button>
         </div>
 
         <div class="profile-bottom">
           <span class="desc-title">Sobre mim</span>
-          <span id="descContent">
+          <p id="profileDescription">
             {{USER_DESC}}
           </span>
         </div>

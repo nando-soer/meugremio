@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"log"
-	"strings"
 	"tcc/dto"
 	"tcc/models"
 	"tcc/utils"
@@ -20,16 +19,6 @@ func CreateStudentService(model models.StudentModel) StudentService {
 
 func (student *StudentService) EmailExists(ctx context.Context, email string) (bool, error) {
 	return student.model.EmailExists(ctx, email)
-}
-
-func (student *StudentService) IsEmailCorrect(ctx context.Context, email string) bool {
-	parts := strings.Split(email, "@")
-	if len(parts) != 2 {
-		return false
-	}
-
-	domain := strings.ToLower(parts[1])
-	return domain == "aluno.cps.sp.gov.br"
 }
 
 func (student *StudentService) Validate(ctx context.Context, submission dto.StudentLogin) (bool, error) {
@@ -96,8 +85,8 @@ func (student *StudentService) InstantiatePendingRegister(ctx context.Context, d
 }
 
 func (student *StudentService) DoesPendingRegisterExists(ctx context.Context, pendingId string) (bool, error) {
-	code, err := student.model.QueryCodeByPendingId(ctx, pendingId);
-	return len(code) > 0, err
+	code, err := student.model.QueryCodeByPendingId(ctx, pendingId)
+	return (len(code) > 0) && (err != nil), err
 }
 
 func (student *StudentService) ValidatePendingRegister(ctx context.Context, pendingId string, code string) (bool, error) {
@@ -137,7 +126,38 @@ func (student *StudentService) RecoverSession(ctx context.Context, sessionId str
 		return dto.StudentResponse{}, err
 	}
 
-	return dto.StudentResponse{Name: data.Name, Email: data.Email, Class: data.Class}, nil
+	return dto.StudentResponse{
+		Name:        data.Name,
+		Email:       data.Email,
+		Class:       data.Class,
+		Description: data.Description,
+		Banner:      data.Banner,
+		Avatar:      data.Avatar}, nil
+}
+
+func (student *StudentService) UpdateProfile(ctx context.Context, sessionId string, data dto.StudentEditData) error {
+	studentId, err := student.model.QueryStudentIdBySession(ctx, sessionId)
+	if err != nil {
+		return err
+	}
+	return student.model.Update(ctx, studentId, data)
+}
+
+func (student *StudentService) ClassExists(ctx context.Context, classCode string) bool {
+	name, err := student.model.QueryClassNameByCode(ctx, classCode)
+	return (len(name) > 0) && (err == nil)
+}
+
+func (student *StudentService) GetAllClasses(ctx context.Context) ([]dto.ClassData, error) {
+	return student.model.QueryAllClasses(ctx)
+}
+
+func (student *StudentService) GetClass(ctx context.Context, classCode string) (dto.ClassData, error) {
+	class, err := student.model.QueryClassByCode(ctx, classCode)
+	if err != nil {
+		return dto.ClassData{}, err
+	}
+	return class, err
 }
 
 // ------------------- TESTE ----------------------------------------------------------------
@@ -157,9 +177,12 @@ func (student *StudentService) QueryNonSensibleDataByEmail(ctx context.Context, 
 	}
 
 	response := dto.StudentResponse{
-		Name:  data.Name,
-		Email: data.Email,
-		Class: data.Class,
+		Name:        data.Name,
+		Email:       data.Email,
+		Class:       data.Class,
+		Description: data.Description,
+		Banner:      data.Banner,
+		Avatar:      data.Avatar,
 	}
 
 	return response, err

@@ -10,6 +10,7 @@ const signupForm = document.querySelector('#credentialForm');
 const passwordView = document.querySelector('#passwordView');
 const confirmPasswordView = document.querySelector('#confirmPasswordView');
 
+const userClass = document.querySelector('#userClass');
 const userPassword = document.querySelector('#userPassword');
 const userConfirmPassword = document.querySelector('#userConfirmPassword');
 const confirmPasswordStatus = document.querySelector('#confirmPasswordStatus');
@@ -45,26 +46,53 @@ function checkPasswordStrength(data) {
 let modal = new Modal();
 modal.Create();
 
+try {
+    const response = await fetch('/api/usuario/classes', {
+        method: 'GET'
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw data.html
+    }
+
+    data.forEach((studentClass) => {
+        const selectClass = new Option(studentClass.code, studentClass.name)
+        userClass.add(selectClass)
+    });
+} catch (error) {
+    modal.UpdateContent(error)
+    modal.Show()
+}
+
 sideMenuButton.addEventListener('click', (_) => SideMenuToggle(sideMenuButton, sideMenu));
 
 passwordView.addEventListener('click', ClickViewPassword);
 confirmPasswordView.addEventListener('click', ClickViewPassword);
 
 userPassword.addEventListener('input', async (_) => {
-    const response = await fetch('/api/teste/senha', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/plain',
-        },
-        body: userPassword.value,
-    });
+    try {
+        const response = await fetch('/api/teste/senha', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/plain',
+            },
+            body: userPassword.value,
+        });
 
-    if (!response.ok) { }
+        const data = await response.json();
 
-    const data = await response.json();
+        if (!response.ok) {
+            throw data.html
+        }
 
-    checkPasswordStrength(data);
-    ChangePasswordStatus(userPassword, userConfirmPassword, confirmPasswordStatus);
+        checkPasswordStrength(data);
+        ChangePasswordStatus(userPassword, userConfirmPassword, confirmPasswordStatus);
+    } catch (error) {
+        modal.UpdateContent(error)
+        modal.Show()
+    }
 });
 
 userConfirmPassword.addEventListener('input', (_) => ChangePasswordStatus(userPassword, userConfirmPassword, confirmPasswordStatus));
@@ -72,46 +100,59 @@ userConfirmPassword.addEventListener('input', (_) => ChangePasswordStatus(userPa
 signupForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const data = {
-        name: document.querySelector('#userName').value,
-        email: document.querySelector('#userEmail').value,
-        class: document.querySelector('#userClass').value,
-        password: userPassword.value
-    };
+    try {
+        const data = {
+            name: document.querySelector('#userName').value,
+            email: document.querySelector('#userEmail').value,
+            class: document.querySelector('#userClass').value,
+            password: userPassword.value
+        };
 
-    let response = await fetch('/api/usuario/cadastrar', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-
-    let responseData = await response.json()
-
-    modal.UpdateContent(responseData.html)
-    modal.Show()
-
-    let confirmRegisterAction = async (_) => {
-        response = await fetch('/api/usuario/confirmar', {
+        let response = await fetch('/api/usuario/cadastrar', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/plain',
+                'Content-Type': 'application/json',
             },
-            body: document.querySelector('#confirmCode').value,
+            body: JSON.stringify(data)
         });
 
-        responseData = await response.json()
+        let responseData = await response.json()
+
+        if (!response.ok) {
+            throw responseData.html
+        }
 
         modal.UpdateContent(responseData.html)
         modal.Show()
 
-        let confirmRegister = document.querySelector('#confirmRegister');
-        if (confirmRegister) confirmRegister.addEventListener('click', confirmRegisterAction)
-    }
+        let confirmRegisterAction = async (_) => {
+            response = await fetch('/api/usuario/confirmar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/plain',
+                },
+                body: document.querySelector('#confirmCode').value,
+            });
 
-    let confirmRegister = document.querySelector('#confirmRegister');
-    if (confirmRegister) {
-        confirmRegister.addEventListener('click', confirmRegisterAction);
+            responseData = await response.json()
+
+            if (!response.ok) {
+                throw responseData.html
+            }
+
+            modal.UpdateContent(responseData.html)
+            modal.Show()
+
+            let confirmRegister = document.querySelector('#confirmRegister');
+            if (confirmRegister) confirmRegister.addEventListener('click', confirmRegisterAction)
+        }
+
+        let confirmRegister = document.querySelector('#confirmRegister');
+        if (confirmRegister) {
+            confirmRegister.addEventListener('click', confirmRegisterAction);
+        }
+    } catch (error) {
+        modal.UpdateContent(error)
+        modal.Show()
     }
 })

@@ -3,6 +3,8 @@ package controllers
 import (
 	"fmt"
 	"io"
+	"log"
+	"math/rand/v2"
 	"net/http"
 	"strings"
 	"tcc/dto"
@@ -48,6 +50,16 @@ func craftResponse(title string, details string, additional string) GenericRespo
 	}
 }
 
+func (student *StudentController) isEmailCorrect(ctx *gin.Context, email string) bool {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return false
+	}
+
+	domain := strings.ToLower(parts[1])
+	return domain == "aluno.cps.sp.gov.br"
+}
+
 func (student *StudentController) readString(ctx *gin.Context) (string, error) {
 	requestBytes, err := io.ReadAll(ctx.Request.Body)
 	if err != nil {
@@ -91,7 +103,7 @@ func (student *StudentController) RetrieveProfile(ctx *gin.Context) {
 		return
 	}
 
-	sessionId, err := ctx.Cookie("id")
+	sessionId, err := student.readString(ctx)
 	if err != nil {
 		// TODO: better error handling
 		ctx.String(http.StatusInternalServerError, err.Error())
@@ -108,10 +120,57 @@ func (student *StudentController) RetrieveProfile(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, data)
 }
 
+func (student *StudentController) UpdateProfile(ctx *gin.Context) {
+	if !student.AlreadyLogged(ctx) {
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"NÃO AUTORIZADO",
+			"Você precisa estar logado para editar o perfil.",
+			"",
+		))
+		return
+	}
+
+	sessionId, _ := ctx.Cookie("id")
+
+	var data dto.StudentEditData
+
+	if err := ctx.ShouldBindJSON(&data); err != nil {
+		ctx.JSON(http.StatusBadRequest, craftResponse(
+			"REQUISIÇÃO MAL FORMADA",
+			"Seus dados foram mal recebidos pelo nosso servidor.",
+			"",
+		))
+		return
+	}
+
+	if err := student.service.UpdateProfile(ctx, sessionId, data); err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Não conseguimos salvar suas alterações.",
+			"",
+		))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, craftResponse(
+		"SUCESSO",
+		"Perfil atualizado com sucesso! Clique no botão abaixo para ver seu novo perfil.",
+		`
+			<button class="btn-primary" type="button" onclick="window.location.href='/usuario/perfil'">
+                Ver
+            </button>
+		`,
+	))
+}
+
 func (student *StudentController) PasswordStrengthVerify(ctx *gin.Context) {
 	plainPassword, err := student.readString(ctx)
 	if err != nil {
-		ctx.String(http.StatusForbidden, "Failed to read password")
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Algo falhou. Recarregue a página",
+			"",
+		))
 		return
 	}
 
@@ -132,24 +191,46 @@ func (student *StudentController) PasswordStrengthVerify(ctx *gin.Context) {
 	})
 }
 
+func (student *StudentController) declareEmptyData(data *dto.StudentData) {
+	data.Description = "Escreva algo aqui!"
+	data.Banner = rand.IntN(9) + 1
+	data.Avatar = dto.AvatarData{
+		Body:      rand.IntN(9) + 1,
+		Shirt:     rand.IntN(10),
+		Pants:     rand.IntN(10),
+		Accessory: rand.IntN(10),
+	}
+}
+
 func (student *StudentController) InitPendingRegister(ctx *gin.Context) {
 	if student.AlreadyLogged(ctx) {
-		ctx.JSON(http.StatusForbidden, GenericResponse{
-			Title:   "USUÁRIO LOGADO",
-			Details: "O usuário já está devidamente registrado e com acesso à plataforma.",
-			Html:    "",
-		})
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"USUÁRIO LOGADO",
+			"O usuário já está devidamente registrado e com acesso à plataforma.",
+			"",
+		))
 		return
 	}
 
 	if !student.InRegisterProcess(ctx) {
 		var data dto.StudentData
 
+		student.declareEmptyData(&data)
+
 		err := ctx.ShouldBindJSON(&data)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, craftResponse(
 				"REQUISIÇÃO MAL FORMADA",
 				"Seus dados foram mal recebidos pelo nosso servidor.",
+				"",
+			))
+			return
+		}
+
+		if !student.service.ClassExists(ctx, data.Class) {
+			ctx.JSON(http.StatusBadRequest, craftResponse(
+				"CLASSE INEXISTENTE",
+				"A classe fornecida não existe.",
 				"",
 			))
 			return
@@ -167,7 +248,7 @@ func (student *StudentController) InitPendingRegister(ctx *gin.Context) {
 			return
 		}
 
-		correct := student.service.IsEmailCorrect(ctx, data.Email)
+		correct := student.isEmailCorrect(ctx, data.Email)
 		if !correct {
 			ctx.JSON(http.StatusForbidden, craftResponse(
 				"EMAIL PROIBIDO",
@@ -202,11 +283,11 @@ func (student *StudentController) InitPendingRegister(ctx *gin.Context) {
 
 func (student *StudentController) ConfirmPendingRegister(ctx *gin.Context) {
 	if student.AlreadyLogged(ctx) {
-		ctx.JSON(http.StatusForbidden, GenericResponse{
-			Title:   "USUÁRIO LOGADO",
-			Details: "O usuário já está devidamente registrado e com acesso à plataforma.",
-			Html:    "",
-		})
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"USUÁRIO LOGADO",
+			"O usuário já está devidamente registrado e com acesso à plataforma.",
+			"",
+		))
 		return
 	}
 
@@ -254,7 +335,6 @@ func (student *StudentController) ConfirmPendingRegister(ctx *gin.Context) {
 
 	err = student.service.FulfillPendingRegister(ctx, pendingId)
 	if err != nil {
-		// TODO: better error handling
 		ctx.JSON(http.StatusInternalServerError, craftResponse(
 			"ERRO INTERNO",
 			"Não conseguimos concluir seu registro.",
@@ -359,6 +439,46 @@ func (student *StudentController) Login(ctx *gin.Context) {
             </button>
 		`,
 	))
+}
+
+func (student *StudentController) RetrieveClasses(ctx *gin.Context) {
+	classes, err := student.service.GetAllClasses(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Não foi possível retornar as classes registradas no sistema. Tente novamente mais tarde.",
+			"",
+		))
+	}
+	ctx.JSON(http.StatusOK, classes)
+}
+
+func (student *StudentController) RetrieveClass(ctx *gin.Context) {
+	log.Println("wa")
+	classCode, err := student.readString(ctx)
+	log.Println(classCode)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Tivemos um erro no reconhecimento do seu perfil. Recarregue a página.",
+			"",
+		))
+		return
+	}
+	log.Println("wi")
+
+	class, err := student.service.GetClass(ctx, classCode)
+	log.Println(class)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"A sala definida no seu perfil não foi encontrada. Recarregue a página.",
+			"",
+		))
+	}
+	log.Println("wu")
+
+	ctx.JSON(http.StatusOK, class)
 }
 
 // ------------------------------------------- Test ---------------------------------------------

@@ -43,10 +43,14 @@ func Init(router *gin.Engine, controller controllers.StudentController) {
 		user_range.StaticFile("/esqueci", "./static/esqueci_senha.html")
 	}
 
-	router.GET("/api/usuario", controller.RetrieveProfile)
+	router.POST("/api/usuario", controller.RetrieveProfile)
 	router.POST("/api/usuario/cadastrar", controller.InitPendingRegister)
 	router.POST("/api/usuario/confirmar", controller.ConfirmPendingRegister)
 	router.POST("/api/usuario/entrar", controller.Login)
+	router.POST("/api/usuario/editar", controller.UpdateProfile)
+
+	router.GET("/api/usuario/classes", controller.RetrieveClasses)
+	router.POST("/api/usuario/classes", controller.RetrieveClass)
 
 	router.POST("/api/teste/senha", controller.PasswordStrengthVerify)
 

@@ -9,7 +9,7 @@
   <link rel="icon" href="/static/favicon.png">
   <link rel="stylesheet" href="/static/style.css">
 
-  <script type="module" src="/static/perfil.js" defer></script>
+  <script type="module" src="/static/perfil_editar.js" defer></script>
 </head>
 
 <body>
@@ -51,59 +51,78 @@
   </header>
 
   <div class="container">
-    <div class="center-card">
-      <div class="banner" id="mainBanner">
-        <button class="btn-banner btn-primary" type="button" onclick="abrirBanners()">Alterar<br>Banner</button>
+    <div class="edit-profile-card center-card">
+      <div class="banner">
+        <img id="studentBanner" src="/static/ilustracoes/banners/1.png" data-name="1">
+        <button class="btn-banner btn-primary" type="button" id="openBanners">Alterar<br>Banner</button>
       </div>
 
-      <!-- <div class="popup-banners" id="popupBanners">
-        <div class="popup-conteudo">
-          <button class="fechar-popup" type="button" onclick="fecharBanners()" aria-label="Fechar"><img
-              src="icones/v grena/19.png" alt="Fechar"></button>
-          <div class="banners-opcoes">
-            <div class="banner-opcao"><img src="ilustracoes/banners/1.png" alt="Banner 1"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/2.png" alt="Banner 2"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/3.png" alt="Banner 3"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/4.png" alt="Banner 4"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/5.png" alt="Banner 5"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/6.png" alt="Banner 6"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/7.png" alt="Banner 7"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/8.png" alt="Banner 8"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/9.png" alt="Banner 9"></div>
-            <div class="banner-opcao"><img src="ilustracoes/banners/10.png" alt="Banner 10"></div>
+      <div class="modal-banners" id="modalBanners">
+        <div class="modal-content">
+          <button class="modal-close" id="closeBanners" type="button" aria-label="Fechar"><img
+              src="/static/icones/v grena/19.png" alt="Fechar"></button>
+          <div class="banners-options">
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/1.png" data-name="1" alt="Banner 1">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/2.png" data-name="2" alt="Banner 2">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/3.png" data-name="3" alt="Banner 3">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/4.png" data-name="4" alt="Banner 4">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/5.png" data-name="5" alt="Banner 5">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/6.png" data-name="6" alt="Banner 6">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/7.png" data-name="7" alt="Banner 7">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/8.png" data-name="8" alt="Banner 8">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/9.png" data-name="9" alt="Banner 9">
+            </div>
+            <div class="banner-option">
+              <img src="/static/ilustracoes/banners/10.png" data-name="10" alt="Banner 10">
+            </div>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <div class="avatar-wrap">
-        <div class="avatar avatar-layers" id="mainAvatar"></div>
+        <div class="avatar avatar-layers" id="studentAvatar">
+          <img src="/static/ilustracoes/avatar/base/1.png" alt="Base">
+          <img src="/static/ilustracoes/avatar/camisas/1.png" alt="Camisa">
+          <img src="/static/ilustracoes/avatar/calcas/1.png" alt="Calça">
+          <img src="/static/ilustracoes/avatar/acessorios/1.png" alt="Acessório">
+        </div>
       </div>
 
       <div class="avatar-btn-wrap">
-        <button class="btn-avatar btn-primary" type="button" onclick="abrirAvatar()">Alterar
+        <button class="btn-avatar btn-primary" type="button" id="openAvatarEdit">Alterar
           Avatar</button>
       </div>
 
       <form class="credential-form">
         <div class="row">
           <div class="field">
-            <label for="name">Nome:</label>
-            <input type="text" id="nome" class="text-input" placeholder="{{STUDENT_NAME}}">
+            <label for="studentName">Nome:</label>
+            <input type="text" class="text-input" id='studentName' placeholder="{{STUDENT_NAME}}">
           </div>
         </div>
 
         <div class="row">
           <div class="field">
-            <label for="class">Turma:</label>
+            <label for="studentClass">Turma:</label>
             <div class="select-wrap">
-              <select id="userClass" name="turma" class="select-display" required>
-                <option value="3_info" disabled selected>3° INFO</option>
-                <option value="2_info">2° INFO</option>
-                <option value="1_info">1° INFO</option>
-                <option value="3_adm">3° ADM</option>
-                <option value="2_adm">2° ADM</option>
-                <option value="1_adm">1° ADM</option>
-                <option value="1_mkt">1° MKT</option>
+              <select name="turma" class="select-display" id='studentClass' required>
               </select>
 
               <span class="select-arrow">
@@ -115,9 +134,8 @@
 
         <div class="row">
           <div class="field">
-            <label for="bio">Bio/Descrição:</label>
-            <textarea id="bio" class="text-input">
-          </textarea>
+            <label for="studentDescription">Bio/Descrição:</label>
+            <textarea class="text-input" id='studentDescription'></textarea>
           </div>
         </div>
 
@@ -127,19 +145,172 @@
     </div>
   </div>
 
-  <!-- <div class="avatar-modal-overlay" id="avatarModal">
+  <div class="avatar-modal-overlay" id="avatarModal">
     <div class="avatar-modal">
-      <button class="modal-close" type="button" onclick="fecharAvatar()" aria-label="Fechar"><img
-          src="icones/v branco/19.png" alt="Fechar"></button>
+      <button class="modal-close" type="button" id="modalClose" aria-label="Fechar">
+        <img src="/static/icones/v grena/19.png" alt="Fechar"></button>
+
       <div class="modal-left">
-        <div class="modal-avatar avatar-layers" id="preview"></div>
+        <div class="modal-avatar avatar-layers" id='preview' data-selection="1,1,1,1">
+          <img src="/static/ilustracoes/avatar/base/1.png" alt="Base">
+          <img src="/static/ilustracoes/avatar/camisas/1.png" alt="Camisa">
+          <img src="/static/ilustracoes/avatar/calcas/1.png" alt="Calça">
+          <img src="/static/ilustracoes/avatar/acessorios/1.png" alt="Acessório">
+        </div>
       </div>
+
       <div class="modal-right">
-        <div class="options-scroll" id="optionsScroll"></div><button class="btn-save-avatar" type="button"
-          onclick="salvarAvatar()">Salvar</button>
+        <div class="options-scroll" id="optionsScroll">
+          <div class="category-title">Base</div>
+          <div class="option-grid">
+            <div class="option-switch" data-selection="base,1">
+              <img src="/static/ilustracoes/avatar/base/1.png" alt="Base 1">
+            </div>
+            <div class="option-switch" data-selection="base,2">
+              <img src="/static/ilustracoes/avatar/base/2.png" alt="Base 2">
+            </div>
+            <div class="option-switch" data-selection="base,3">
+              <img src="/static/ilustracoes/avatar/base/3.png" alt="Base 3">
+            </div>
+            <div class="option-switch" data-selection="base,4">
+              <img src="/static/ilustracoes/avatar/base/4.png" alt="Base 4">
+            </div>
+            <div class="option-switch" data-selection="base,5">
+              <img src="/static/ilustracoes/avatar/base/5.png" alt="Base 5">
+            </div>
+            <div class="option-switch" data-selection="base,6">
+              <img src="/static/ilustracoes/avatar/base/6.png" alt="Base 6">
+            </div>
+            <div class="option-switch" data-selection="base,7">
+              <img src="/static/ilustracoes/avatar/base/7.png" alt="Base 7">
+            </div>
+            <div class="option-switch" data-selection="base,8">
+              <img src="/static/ilustracoes/avatar/base/8.png" alt="Base 8">
+            </div>
+            <div class="option-switch" data-selection="base,9">
+              <img src="/static/ilustracoes/avatar/base/9.png" alt="Base 9">
+            </div>
+            <div class="option-switch" data-selection="base,10">
+              <img src="/static/ilustracoes/avatar/base/10.png" alt="Base 10">
+            </div>
+          </div>
+
+          <div class="category-title">Camisa</div>
+          <div class="option-grid">
+            <div class="option-switch none-option" data-selection="camisas,0">
+              <img src="/static/icones/v grena/25.png" alt="Nenhum">
+            </div>
+            <div class="option-switch" data-selection="camisas,1"><img src="/static/ilustracoes/avatar/camisas/1.png"
+                alt="Camisa 1"></div>
+            <div class="option-switch" data-selection="camisas,2">
+              <img src="/static/ilustracoes/avatar/camisas/2.png" alt="Camisa 2">
+            </div>
+            <div class="option-switch" data-selection="camisas,3">
+              <img src="/static/ilustracoes/avatar/camisas/3.png" alt="Camisa 3">
+            </div>
+            <div class="option-switch" data-selection="camisas,4">
+              <img src="/static/ilustracoes/avatar/camisas/4.png" alt="Camisa 4">
+            </div>
+            <div class="option-switch" data-selection="camisas,5">
+              <img src="/static/ilustracoes/avatar/camisas/5.png" alt="Camisa 5">
+            </div>
+            <div class="option-switch" data-selection="camisas,6">
+              <img src="/static/ilustracoes/avatar/camisas/6.png" alt="Camisa 6">
+            </div>
+            <div class="option-switch" data-selection="camisas,7">
+              <img src="/static/ilustracoes/avatar/camisas/7.png" alt="Camisa 7">
+            </div>
+            <div class="option-switch" data-selection="camisas,8">
+              <img src="/static/ilustracoes/avatar/camisas/8.png" alt="Camisa 8">
+            </div>
+            <div class="option-switch" data-selection="camisas,9">
+              <img src="/static/ilustracoes/avatar/camisas/9.png" alt="Camisa 9">
+            </div>
+            <div class="option-switch" data-selection="camisas,10">
+              <img src="/static/ilustracoes/avatar/camisas/10.png" alt="Camisa 10">
+            </div>
+          </div>
+
+          <div class="category-title">Calça</div>
+          <div class="option-grid">
+            <div class="option-switch none-option" data-selection="calcas,0">
+              <img src="/static/icones/v grena/25.png" alt="Nenhum">
+            </div>
+            <div class="option-switch" data-selection="calcas,1">
+              <img src="/static/ilustracoes/avatar/calcas/1.png" alt="Calça 1">
+            </div>
+            <div class="option-switch" data-selection="calcas,2">
+              <img src="/static/ilustracoes/avatar/calcas/2.png" alt="Calça 2">
+            </div>
+            <div class="option-switch" data-selection="calcas,3">
+              <img src="/static/ilustracoes/avatar/calcas/3.png" alt="Calça 3">
+            </div>
+            <div class="option-switch" data-selection="calcas,4">
+              <img src="/static/ilustracoes/avatar/calcas/4.png" alt="Calça 4">
+            </div>
+            <div class="option-switch" data-selection="calcas,5">
+              <img src="/static/ilustracoes/avatar/calcas/5.png" alt="Calça 5">
+            </div>
+            <div class="option-switch" data-selection="calcas,6">
+              <img src="/static/ilustracoes/avatar/calcas/6.png" alt="Calça 6">
+            </div>
+            <div class="option-switch" data-selection="calcas,7">
+              <img src="/static/ilustracoes/avatar/calcas/7.png" alt="Calça 7">
+            </div>
+            <div class="option-switch" data-selection="calcas,8">
+              <img src="/static/ilustracoes/avatar/calcas/8.png" alt="Calça 8">
+            </div>
+            <div class="option-switch" data-selection="calcas,9">
+              <img src="/static/ilustracoes/avatar/calcas/9.png" alt="Calça 9">
+            </div>
+            <div class="option-switch" data-selection="calcas,10">
+              <img src="/static/ilustracoes/avatar/calcas/10.png" alt="Calça 10">
+            </div>
+          </div>
+
+          <div class="category-title">Acessório</div>
+          <div class="option-grid">
+            <div class="option-switch none-option" data-selection="acessorios,0">
+              <img src="/static/icones/v grena/25.png" alt="Nenhum">
+            </div>
+            <div class="option-switch" data-selection="acessorios,1">
+              <img src="/static/ilustracoes/avatar/acessorios/1.png" alt="Acessório 1">
+            </div>
+            <div class="option-switch" data-selection="acessorios,2">
+              <img src="/static/ilustracoes/avatar/acessorios/2.png" alt="Acessório 2">
+            </div>
+            <div class="option-switch" data-selection="acessorios,3">
+              <img src="/static/ilustracoes/avatar/acessorios/3.png" alt="Acessório 3">
+            </div>
+            <div class="option-switch" data-selection="acessorios,4">
+              <img src="/static/ilustracoes/avatar/acessorios/4.png" alt="Acessório 4">
+            </div>
+            <div class="option-switch" data-selection="acessorios,5">
+              <img src="/static/ilustracoes/avatar/acessorios/5.png" alt="Acessório 5">
+            </div>
+            <div class="option-switch" data-selection="acessorios,6">
+              <img src="/static/ilustracoes/avatar/acessorios/6.png" alt="Acessório 6">
+            </div>
+            <div class="option-switch" data-selection="acessorios,7">
+              <img src="/static/ilustracoes/avatar/acessorios/7.png" alt="Acessório 7">
+            </div>
+            <div class="option-switch" data-selection="acessorios,8">
+              <img src="/static/ilustracoes/avatar/acessorios/8.png" alt="Acessório 8">
+            </div>
+            <div class="option-switch" data-selection="acessorios,9">
+              <img src="/static/ilustracoes/avatar/acessorios/9.png" alt="Acessório 9">
+            </div>
+            <div class="option-switch" data-selection="acessorios,10">
+              <img src="/static/ilustracoes/avatar/acessorios/10.png" alt="Acessório 10">
+            </div>
+          </div>
+
+        </div>
+
+        <button class="btn-primary btn-save-avatar" type="button">Salvar</button>
       </div>
     </div>
-  </div> -->
+  </div>
 </body>
 
 </html>

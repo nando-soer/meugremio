@@ -1,10 +1,34 @@
 package dto
 
+type AvatarData struct {
+	Body      int
+	Shirt     int
+	Pants     int
+	Accessory int
+}
+
+type ClassData struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
+
 type StudentData struct {
-	Name     string `json:"name" binding:"required,alphaspace,min=3,max=150"`
-	Email    string `json:"email" binding:"required,email,max=254"`
-	Class    string `json:"class" binding:"required,printascii"`
-	Password string `json:"password" binding:"required,max=128"`
+	Name        string     `json:"name" binding:"required,min=3,max=150"`
+	Email       string     `json:"email" binding:"required,email,max=254"`
+	Class       string     `json:"class"`
+	Description string     `json:"description"`
+	Banner      int        `json:"banner"`
+	Avatar      AvatarData `json:"avatar"`
+	Password    string     `json:"password" binding:"required,max=128"`
+}
+
+type StudentEditData struct {
+	// Email       string     `json:"email" binding:"required,email,max=254"`
+	Name        string     `json:"name"`
+	Class       string     `json:"class"`
+	Description string     `json:"description"`
+	Banner      int        `json:"banner"`
+	Avatar      AvatarData `json:"avatar"`
 }
 
 type StudentLogin struct {
@@ -13,7 +37,10 @@ type StudentLogin struct {
 }
 
 type StudentResponse struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Class string `json:"class"`
+	Name        string     `json:"name"`
+	Email       string     `json:"email"`
+	Class       string     `json:"class"`
+	Description string     `json:"description"`
+	Banner      int        `json:"banner"`
+	Avatar      AvatarData `json:"avatar"`
 }
