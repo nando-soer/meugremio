@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -50,6 +51,21 @@ func GenerateConfirmationCode() (string, error) {
 	}
 
 	return base64.RawStdEncoding.EncodeToString(random), err
+}
+
+func GenerateRecoveryToken() (string, error) {
+	return GenerateSessionId() // Mesmo algoritmo
+}
+
+func HashToken(token string) string {
+	hash := sha256.Sum256([]byte(token))
+	storableHash := hex.EncodeToString(hash[:])
+	return storableHash
+}
+
+func CompareTokens(receivedToken, encodedToken string) bool {
+	receivedHash := HashToken(receivedToken)
+	return subtle.ConstantTimeCompare([]byte(receivedHash), []byte(encodedToken)) == 1
 }
 
 func encryptPassword(password, key string) []byte {
@@ -110,7 +126,7 @@ func decodeHash(encodedString string) (hash []byte, salt []byte, p params, err e
 	return
 }
 
-func HashPassowrd(password string) (encodedString string, err error) {
+func HashPassword(password string) (encodedString string, err error) {
 	// REFERENCE: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 	defaultParams := params{
 		memory:      64 * 1024,

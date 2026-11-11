@@ -23,7 +23,6 @@ type StudentData struct {
 }
 
 type StudentEditData struct {
-	// Email       string     `json:"email" binding:"required,email,max=254"`
 	Name        string     `json:"name"`
 	Class       string     `json:"class"`
 	Description string     `json:"description"`
@@ -43,4 +42,9 @@ type StudentResponse struct {
 	Description string     `json:"description"`
 	Banner      int        `json:"banner"`
 	Avatar      AvatarData `json:"avatar"`
+}
+
+type StudentPasswordUpdate struct {
+	Token    string `json:"token"`
+	Password string `json:"password,omitempty"`
 }

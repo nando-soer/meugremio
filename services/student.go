@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"log"
+	"net/url"
 	"tcc/dto"
 	"tcc/models"
 	"tcc/utils"
@@ -66,7 +67,7 @@ func (student *StudentService) InstantiatePendingRegister(ctx context.Context, d
 
 	log.Println(code)
 
-	data.Password, err = utils.HashPassowrd(data.Password)
+	data.Password, err = utils.HashPassword(data.Password)
 	if err != nil {
 		return "", err
 	}
@@ -104,6 +105,67 @@ func (student *StudentService) FulfillPendingRegister(ctx context.Context, pendi
 	}
 
 	err = student.model.Insert(ctx, data)
+	return err
+}
+
+func (student *StudentService) generateRecoveryLink(address, token string) (string, error) {
+	url, err := url.Parse(address)
+	if err != nil {
+		return "", err
+	}
+
+	url.Path = "/usuario/esqueci"
+
+	query := url.Query()
+	query.Set("token", token)
+
+	url.RawQuery = query.Encode()
+
+	return url.String(), err
+}
+
+func (student *StudentService) InstantiatePasswordRecovery(ctx context.Context, email string) error {
+	studentId, err := student.model.QueryStudentIdByEmail(ctx, email)
+	if err != nil {
+		return err
+	}
+
+	token, err := utils.GenerateRecoveryToken()
+	if err != nil {
+		return err
+	}
+
+	link, err := student.generateRecoveryLink("http://localhost:8080", token) // TODO: trocar pra URL de produção
+	if err != nil {
+		return err
+	}
+
+	// err = student.SendConfirmationEmail(ctx, email, link)
+	// if err != nil {
+	// 	return err
+	// }
+
+	log.Println(link)
+
+	hashedToken := utils.HashToken(token)
+	err = student.model.InsertPasswordRecovery(ctx, studentId, hashedToken)
+
+	return err
+}
+
+func (student *StudentService) RecoverStudentRecoveryId(ctx context.Context, token string) (int64, error) {
+	hash := utils.HashToken(token)
+	studentId, err := student.model.QueryStudentRecoveryIdByHash(ctx, hash)
+	return studentId, err
+}
+
+func (student StudentService) ChangePasswordById(ctx context.Context, id int64, newPassword string) error {
+	newPassword, err := utils.HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+
+	err = student.model.UpdatePasswordById(ctx, id, newPassword)
 	return err
 }
 
@@ -158,6 +220,12 @@ func (student *StudentService) GetClass(ctx context.Context, classCode string) (
 		return dto.ClassData{}, err
 	}
 	return class, err
+}
+
+func (student *StudentService) DeletePasswordRecovery(ctx context.Context, token string) error {
+	hashedToken := utils.HashToken(token)
+	err := student.model.DeleteRecoveryByHash(ctx, hashedToken)
+	return err
 }
 
 // ------------------- TESTE ----------------------------------------------------------------

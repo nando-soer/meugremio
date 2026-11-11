@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"io"
-	"log"
 	"math/rand/v2"
 	"net/http"
 	"strings"
@@ -50,7 +49,7 @@ func craftResponse(title string, details string, additional string) GenericRespo
 	}
 }
 
-func (student *StudentController) isEmailCorrect(ctx *gin.Context, email string) bool {
+func (student *StudentController) isEmailCorrect(email string) bool {
 	parts := strings.Split(email, "@")
 	if len(parts) != 2 {
 		return false
@@ -248,7 +247,7 @@ func (student *StudentController) InitPendingRegister(ctx *gin.Context) {
 			return
 		}
 
-		correct := student.isEmailCorrect(ctx, data.Email)
+		correct := student.isEmailCorrect(data.Email)
 		if !correct {
 			ctx.JSON(http.StatusForbidden, craftResponse(
 				"EMAIL PROIBIDO",
@@ -377,6 +376,8 @@ func (student *StudentController) Login(ctx *gin.Context) {
 		return
 	}
 
+	submission.Email = strings.ToLower(submission.Email)
+
 	emailExists, err := student.service.EmailExists(ctx, submission.Email)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, craftResponse(
@@ -441,6 +442,113 @@ func (student *StudentController) Login(ctx *gin.Context) {
 	))
 }
 
+func (student *StudentController) InitPasswordRecovery(ctx *gin.Context) {
+	email, err := student.readString(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, craftResponse(
+			"ERRO INTERNO",
+			"Encontramos um problema durante o seu pedido de alteração de senha. Recarregue a página e tente novamente.",
+			"",
+		))
+		return
+	}
+
+	email = strings.ToLower(email)
+
+	if len(email) == 0 {
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"EMAIL VAZIO",
+			"Digite um email para realizar a requisição de alteração de senha.",
+			"",
+		))
+		return
+	}
+
+	exists, err := student.service.EmailExists(ctx, email)
+	if !exists || err != nil {
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"EMAIL INEXISTENTE",
+			"O email inserido não está cadastrado na plataforma.",
+			"",
+		))
+		return
+	}
+
+	err = student.service.InstantiatePasswordRecovery(ctx, email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Encontramos um problema durante o seu pedido de alteração de senha. Recarregue a página e tente novamente.",
+			"",
+		))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, craftResponse(
+		"ENVIADO",
+		"Uma mensagem com as etapas de recuperação de senha foi enviado para seu email.",
+		"",
+	))
+}
+
+func (student *StudentController) AlterPassword(ctx *gin.Context) {
+	var submission dto.StudentPasswordUpdate
+
+	err := ctx.ShouldBindJSON(&submission)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, craftResponse(
+			"REQUISIÇÃO MAL FORMADA",
+			"Seus dados foram mal recebidos pelo nosso servidor.",
+			"",
+		))
+		return
+	}
+
+	id, err := student.service.RecoverStudentRecoveryId(ctx, submission.Token)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, craftResponse(
+			"TOKEN INEXISTENTE",
+			"Falhamos em encontrar o token associado a sua requisição de mudança de senha. Se o erro persistir, inicie uma nova requisição.",
+			"",
+		))
+		return
+	}
+
+	if len(submission.Password) == 0 {
+		return
+	}
+
+	err = student.service.ChangePasswordById(ctx, id, submission.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Falhamos alterar sua senha. Tente novamente mais tarde.",
+			"",
+		))
+		return
+	}
+
+	err = student.service.DeletePasswordRecovery(ctx, submission.Token)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, craftResponse(
+			"ERRO INTERNO",
+			"Falhamos em finalizar com o processo de alteração de senha. Tente novamente mais tarde.",
+			"",
+		))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, craftResponse(
+		"SUCESSO",
+		"Sua senha foi alterada com sucesso! Clique no botão abaixo para entrar em sua conta com a nova senha.",
+		`
+			<button class="btn-primary" type="button" onclick="window.location.href='/usuario/entrar'">
+                Entrar
+            </button>
+		`,
+	))
+}
+
 func (student *StudentController) RetrieveClasses(ctx *gin.Context) {
 	classes, err := student.service.GetAllClasses(ctx)
 	if err != nil {
@@ -454,9 +562,7 @@ func (student *StudentController) RetrieveClasses(ctx *gin.Context) {
 }
 
 func (student *StudentController) RetrieveClass(ctx *gin.Context) {
-	log.Println("wa")
 	classCode, err := student.readString(ctx)
-	log.Println(classCode)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, craftResponse(
 			"ERRO INTERNO",
@@ -465,10 +571,8 @@ func (student *StudentController) RetrieveClass(ctx *gin.Context) {
 		))
 		return
 	}
-	log.Println("wi")
 
 	class, err := student.service.GetClass(ctx, classCode)
-	log.Println(class)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, craftResponse(
 			"ERRO INTERNO",
@@ -476,7 +580,6 @@ func (student *StudentController) RetrieveClass(ctx *gin.Context) {
 			"",
 		))
 	}
-	log.Println("wu")
 
 	ctx.JSON(http.StatusOK, class)
 }

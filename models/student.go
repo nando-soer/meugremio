@@ -17,6 +17,12 @@ func CreateStudentModel(pool *pgxpool.Pool) StudentModel {
 	return StudentModel{pool: pool}
 }
 
+func (model *StudentModel) EmailExists(ctx context.Context, email string) (bool, error) {
+	var exists bool
+	err := model.pool.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE email=$1)", email).Scan(&exists)
+	return exists, err
+}
+
 func (model *StudentModel) Insert(ctx context.Context, data dto.StudentData) (err error) {
 	encodedAvatarData, err := json.Marshal(data.Avatar)
 	if err != nil {
@@ -31,15 +37,28 @@ func (model *StudentModel) Insert(ctx context.Context, data dto.StudentData) (er
 }
 
 func (model *StudentModel) InsertNewSession(ctx context.Context, sessionId string, studentId int64, expiration time.Time) error {
-	_, err := model.pool.Exec(ctx, "INSERT INTO sessions (id, student_id, expires_at) VALUES ($1, $2, $3)", sessionId, studentId, expiration)
+	_, err := model.pool.Exec(ctx,
+		`INSERT INTO sessions (id, student_id, expires_at)
+		VALUES ($1, $2, $3)`,
+		sessionId, studentId, expiration)
 	return err
 }
 
 func (model *StudentModel) InsertPendingRegister(ctx context.Context, code string, data dto.StudentData) (string, error) {
 	var pendingId string
 	encodedStudentData, err := json.Marshal(data)
-	err = model.pool.QueryRow(ctx, "INSERT INTO pending_registers (code, data, attempts, expires_at) VALUES ($1, $2, $3, NOW() + INTERVAL '10 minutes') RETURNING id", code, encodedStudentData, 0).Scan(&pendingId)
+	err = model.pool.QueryRow(ctx, `INSERT INTO pending_registers (code, data, attempts, expires_at)
+									VALUES ($1, $2, $3, NOW() + INTERVAL '10 minutes') RETURNING id`,
+		code, encodedStudentData, 0).Scan(&pendingId)
 	return pendingId, err
+}
+
+func (model *StudentModel) InsertPasswordRecovery(ctx context.Context, studentId int64, tokenHash string) error {
+	_, err := model.pool.Exec(ctx,
+		`INSERT INTO password_recovery (student_id, token_hash, expires_at)
+		VALUES ($1, $2, NOW() + INTERVAL '10 minutes')`,
+		studentId, tokenHash)
+	return err
 }
 
 func (model *StudentModel) QueryPendingRegister(ctx context.Context, pendingId string) (dto.StudentData, error) {
@@ -158,6 +177,12 @@ func (model *StudentModel) QueryAllClasses(ctx context.Context) ([]dto.ClassData
 	return classes, err
 }
 
+func (model *StudentModel) QueryStudentRecoveryIdByHash(ctx context.Context, hash string) (int64, error) {
+	var id int64
+	err := model.pool.QueryRow(ctx, "SELECT student_id FROM password_recovery WHERE token_hash=$1 AND expires_at > NOW()", hash).Scan(&id)
+	return id, err
+}
+
 func (model *StudentModel) Update(ctx context.Context, id int64, data dto.StudentEditData) error {
 	encodedAvatar, err := json.Marshal(data.Avatar)
 	if err != nil {
@@ -172,10 +197,18 @@ func (model *StudentModel) Update(ctx context.Context, id int64, data dto.Studen
 	return err
 }
 
-func (model *StudentModel) EmailExists(ctx context.Context, email string) (bool, error) {
-	var exists bool
-	err := model.pool.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE email=$1)", email).Scan(&exists)
-	return exists, err
+func (model *StudentModel) UpdatePasswordById(ctx context.Context, id int64, newPassword string) error {
+	_, err := model.pool.Exec(ctx,
+		`UPDATE students
+         SET password=$1
+         WHERE id=$2`,
+		newPassword, id)
+	return err
+}
+
+func (model *StudentModel) DeleteRecoveryByHash(ctx context.Context, hash string) error {
+	_, err := model.pool.Exec(ctx, "DELETE FROM password_recovery WHERE token_hash=$1", hash)
+	return err
 }
 
 // ----------------------------------------- TESTE -----------------------------------------------------

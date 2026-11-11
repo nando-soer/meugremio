@@ -11,6 +11,7 @@ const userPassword = document.querySelector('#userPassword');
 const passwordView = document.querySelector('#passwordView');
 const confirmPasswordView = document.querySelector('#confirmPasswordView');
 const userConfirmPassword = document.querySelector('#userConfirmPassword');
+const passwordRecovery = document.querySelector('#passwordRecovery');
 
 let modal = new Modal();
 modal.Create();
@@ -31,10 +32,10 @@ loginForm.addEventListener('submit', async (event) => {
         body: JSON.stringify(data)
     });
 
-    let responseData = await response.json()
+    let responseData = await response.json();
 
-    modal.UpdateContent(responseData.html)
-    modal.Show()
+    modal.UpdateContent(responseData.html);
+    modal.Show();
 });
 
 sideMenuButton.addEventListener('click', (_) => SideMenuToggle(sideMenuButton, sideMenu));
@@ -44,3 +45,20 @@ userConfirmPassword.addEventListener('input', (_) => ChangePasswordStatus(userPa
 
 passwordView.addEventListener('click', ClickViewPassword);
 confirmPasswordView.addEventListener('click', ClickViewPassword);
+
+passwordRecovery.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    let response = await fetch('/api/usuario/esqueci', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/plain',
+        },
+        body: document.querySelector('#userEmail').value
+    });
+
+    let responseData = await response.json();
+
+    modal.UpdateContent(responseData.html);
+    modal.Show();
+});
